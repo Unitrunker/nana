@@ -2,7 +2,7 @@
 #include <nana/deploy.hpp>
 #include "../paint/truetype.hpp"
 
-#ifdef NANA_WINDOWS
+#if defined(NANA_WINDOWS)
 
 #	ifndef _WIN32_WINNT
 #		define _WIN32_WINNT  0x0501
@@ -149,6 +149,7 @@ IsWindows8OrGreater()
 #		include <iconv.h>
 #		include <fstream>
 #	endif
+#include <map>
 #endif
 
 namespace nana

@@ -80,13 +80,13 @@ namespace detail
 			cursor.handle = 0;
 		}
 	};
-	
+
 	struct bedrock::private_impl
 	{
 		typedef std::map<unsigned, thread_context> thr_context_container;
 		std::recursive_mutex mutex;
 		thr_context_container thr_contexts;
-		
+
 		element_store estore;
 
 		struct cache_type
@@ -266,7 +266,7 @@ namespace detail
 
 			good_wd = true;
 		}
-		
+
 
 		if(thrd) thrd->event_window = prev_wd;
 		return good_wd;
@@ -349,7 +349,7 @@ namespace detail
 			arg.distance = 120;
 			arg.which = arg_wheel::wheel::vertical;
 		}
-		
+
 	}
 
 	void timer_proc(unsigned tid)
@@ -534,7 +534,7 @@ namespace detail
 
 					arg.evt_code = event_code::mouse_move;
 					brock.emit(event_code::mouse_move, msgwnd, arg, true, &context);
-					
+
 					if (!wd_manager.available(hovered_wd))
 						hovered_wd = nullptr;
 				}
@@ -561,7 +561,7 @@ namespace detail
 					auto & cf = xevent.xconfigure;
 					wd_manager.size(msgwnd, nana::size{static_cast<unsigned>(cf.width), static_cast<unsigned>(cf.height)}, true, true);
 				}
-				
+
 				if(msgwnd->pos_native.x != xevent.xconfigure.x || msgwnd->pos_native.y != xevent.xconfigure.y)
 				{
 					msgwnd->pos_native.x = xevent.xconfigure.x;
@@ -582,7 +582,7 @@ namespace detail
 				pressed_wd = nullptr;
 				if(nullptr == msgwnd)
 					break;
-					
+
 				if ((msgwnd == msgwnd->root_widget->other.attribute.root->menubar) && brock.get_menu(msgwnd->root, true))
 					brock.erase_menu(true);
 				else
@@ -670,7 +670,7 @@ namespace detail
 						arg.which = arg_wheel::wheel::vertical;
 						assign_arg(arg, msgwnd, xevent);
 						draw_invoker(&drawer::mouse_wheel, msgwnd, arg, &context);
-						wd_manager.do_lazy_refresh(msgwnd, false); 
+						wd_manager.do_lazy_refresh(msgwnd, false);
 					}
 				}
 				else
@@ -700,13 +700,13 @@ namespace detail
 								draw_invoker(&drawer::click, msgwnd, click_arg, &context);
 							}
 						}
-					
+
 						//Do mouse_up, this handle may be closed by click handler.
 						if(wd_manager.available(msgwnd) && msgwnd->flags.enabled)
 						{
 							if(hit)
 								msgwnd->set_action(mouse_action::hovered);
-							
+
 							auto retain = msgwnd->annex.events_ptr;
 							auto evt_ptr = retain.get();
 
@@ -804,7 +804,7 @@ namespace detail
 				{
 					arg_mouse arg;
 					assign_arg(arg, msgwnd, message, xevent);
-					
+
 					if (mouse_action::pressed != msgwnd->flags.action)
 						msgwnd->set_action(mouse_action::hovered);
 
@@ -981,8 +981,8 @@ namespace detail
 							{
 								const wchar_t* charbuf;
 
-								nana::detail::charset_conv charset("UTF-32", "UTF-8");
-								const std::string& str = charset.charset(std::string(keybuf, keybuf + len));
+								nana::detail::charset_conv set("UTF-32", "UTF-8");
+								const std::string& str = set.charset(std::string(keybuf, keybuf + len));
 								charbuf = reinterpret_cast<const wchar_t*>(str.c_str()) + 1;
 								len = str.size() / sizeof(wchar_t) - 1;
 
@@ -1039,12 +1039,12 @@ namespace detail
 							context.is_ctrl_pressed = false;
 
                         if (('\t' == os_code) && root_runtime->condition.ignore_tab)
-                        { 
+                        {
                             root_runtime->condition.ignore_tab = false;
                         }
                         else
                         {
-                        
+
 						    msgwnd = brock.focus();
 						    if(msgwnd)
 						    {
@@ -1078,7 +1078,7 @@ namespace detail
 							    else
 							    {
 								    arg_keyboard arg;
-                          
+
 								    arg.evt_code = event_code::key_release;
 								    arg.window_handle = reinterpret_cast<window>(msgwnd);
 								    arg.ignore = false;
@@ -1177,7 +1177,7 @@ namespace detail
 
 		auto & lock = wd_manager().internal_lock();
 		lock.revert();
-		
+
 		native_window_type owner_native{};
 		core_window_t * owner = 0;
 		if(condition_wd && is_modal)
@@ -1190,9 +1190,9 @@ namespace detail
 				owner = wd_manager().root(owner_native);
 				if(owner)
 					owner->flags.enabled = false;
-			}	
+			}
 		}
-		
+
 		nana::detail::platform_spec::instance().msg_dispatch(condition_wd ? reinterpret_cast<core_window_t*>(condition_wd)->root : 0);
 
 		if(owner_native)
@@ -1204,7 +1204,7 @@ namespace detail
 
 		//Before exit of pump_event, it should call the remove_trash_handle.
 		//Under Linux, if the windows are closed in other threads, all the widgets handles
-		//will be marked as deleted after exit of the event loop and in other threads. So the 
+		//will be marked as deleted after exit of the event loop and in other threads. So the
 		//handle should be deleted from trash before exit the pump_event.
 		auto thread_id = ::nana::system::this_thread_id();
 		wd_manager().call_safe_place(thread_id);
@@ -1289,7 +1289,7 @@ namespace detail
 	{
 		if (!wd_manager().available(wd))
 			return;
-	
+
 		wd->root_widget->other.attribute.root->state_cursor = nana::cursor::arrow;
 		wd->root_widget->other.attribute.root->state_cursor_window = nullptr;
 

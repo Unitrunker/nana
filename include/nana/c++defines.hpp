@@ -79,23 +79,19 @@
 
 #elif defined(APPLE)	//Mac OS X
 	//Symbols for MACOS
-
 	#define NANA_MACOS
+	#define NANA_POSIX
 	#define NANA_X11
-
+#elif defined(__FreeBSD__)
+	#define NANA_POSIX
+	#define NANA_X11
 #elif (defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__)) && !defined(_CRAYC)	//Linux
 	#define NANA_LINUX
+	#define NANA_POSIX
 	#define NANA_X11
 #else
-	static_assert(false, "Only Windows and Unix are supported now (Mac OS is experimental)");
+	static_assert(false, "Only Windows and Linux are supported now (Mac OS and BSD are experimental)");
 #endif
-
-//Define a symbol for POSIX operating system.
-#if defined(NANA_LINUX) || defined(NANA_MACOS)
-	#define NANA_POSIX
-#endif
-
-
 
 // Select compiler ...
 #if defined(_MSC_VER)	//Microsoft Visual C++

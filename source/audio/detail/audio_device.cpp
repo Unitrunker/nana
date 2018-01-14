@@ -5,7 +5,7 @@
 
 #include <nana/system/platform.hpp>
 
-#if defined(NANA_LINUX)
+#if defined(NANA_POSIX)
 	#include <pthread.h>
 	#include <unistd.h>
 	#include <sys/time.h>
@@ -49,6 +49,8 @@ namespace nana{namespace audio
 				: handle_(nullptr), buf_prep_(nullptr)
 #elif defined(NANA_LINUX)
 				: handle_(nullptr), buf_prep_(nullptr)
+#elif defined(NANA_POSIX)
+				: handle_(-1), buf_prep_(nullptr)
 #endif
 			{}
 
@@ -59,7 +61,11 @@ namespace nana{namespace audio
 
 			bool audio_device::empty() const
 			{
+			    #if defined(NANA_WINDOWS) || defined(NANA_LINUX)
 				return (nullptr == handle_);
+				#else
+				return -1 == handle_;
+				#endif
 			}
 
 			bool audio_device::open(std::size_t channels, std::size_t rate, std::size_t bits_per_sample)
@@ -159,19 +165,52 @@ namespace nana{namespace audio
 					return true;
 				}
 				return false;
+#elif defined(NANA_POSIX)
+                // TODO: dig through output from /dev/sndstat.
+                // Find the default audio device and use that.
+                // Example output:
+                // > Installed devices:
+                // > pcm0: <Intel Haswell (HDMI/DP 8ch)> (play)
+                // > pcm1: <Realtek ALC292 (Analog 2.0+HP/2.0)> (play/rec) default
+                // > pcm2: <Realtek ALC292 (Internal Analog Mic)> (rec)
+                // The line marked "default" above is the one we want.
+                // pcm1 is the same as /dev/dsp1 (and /dev/dspW1 is the 16 bit version).
+                handle_ = ::open("/dev/dspW1.0", O_WRONLY);
+                if (handle_ == -1)
+                {
+                    return false;
+                }
+                int zero = 0;
+                int caps = 0;
+                int fragment = 0x200008L;
+                ioctl(handle_, SNDCTL_DSP_COOKEDMODE, &zero);
+                ioctl(handle_, SNDCTL_DSP_SETFRAGMENT, &fragment);
+                ioctl(handle_, SNDCTL_DSP_GETCAPS, &caps);
+                ioctl(handle_, SNDCTL_DSP_SETFMT, &bits_per_sample);
+                ioctl(handle_, SNDCTL_DSP_CHANNELS, &channels);
+                ioctl(handle_, SNDCTL_DSP_SPEED, &rate);
+                channels_ = channels;
+                rate_ = rate;
+                bytes_per_sample_ = (bits_per_sample >> 3);
+                bytes_per_frame_ = bytes_per_sample_ * channels;
+				return true;
 #endif
 			}
 
 			void audio_device::close()
 			{
-				if(handle_)
+				if( !empty() )
 				{
 #if defined(NANA_WINDOWS)
 					wave_native_if.out_close(handle_);
+					handle_ = nullptr;
 #elif defined(NANA_LINUX)
 					::snd_pcm_close(handle_);
-#endif
 					handle_ = nullptr;
+#elif defined(NANA_POSIX)
+					::close(handle_);
+					handle_ = -1;
+#endif
 				}
 			}
 
@@ -204,6 +243,11 @@ namespace nana{namespace audio
 					else if(-EPIPE == err)
 						::snd_pcm_prepare(handle_);
 				}
+				buf_prep_->revert(m);
+#elif defined(NANA_POSIX)
+                // consider moving this to a background thread.
+                // currently this blocks calling thread.
+                ::write(handle_, m->buf, m->bufsize);
 				buf_prep_->revert(m);
 #endif
 			}

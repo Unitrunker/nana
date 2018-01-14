@@ -17,12 +17,15 @@
 #if defined(NANA_WINDOWS)
 	#include <windows.h>
 	#include "../detail/mswin/platform_spec.hpp"
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 	#include <time.h>
 	#include <errno.h>
 	#include <unistd.h>
 	#include <sys/time.h>
 	#include <sys/syscall.h>
+	#ifdef __FreeBSD__
+	#include <pthread.h>
+	#endif
 #endif
 
 namespace nana
@@ -36,7 +39,7 @@ namespace system
 	{
 #if defined(NANA_WINDOWS)
 		::Sleep(milliseconds);
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 		struct timespec timeOut, remains;
 		timeOut.tv_sec = milliseconds / 1000;
 		timeOut.tv_nsec = (milliseconds % 1000) * 1000000;
@@ -60,6 +63,8 @@ namespace system
 		return ::syscall(__NR_gettid);
 #elif defined(NANA_MACOS)
 		return ::syscall(SYS_thread_selfid);
+		#elif defined(__FreeBSD__)
+		return (unsigned long)pthread_self(); // hackity hack.
 #endif
 	}
 
@@ -67,7 +72,7 @@ namespace system
 	{
 #if defined(NANA_WINDOWS)
 		return ::GetTickCount();
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 		struct timeval tv;
 		::gettimeofday(&tv, 0);
 		return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
@@ -92,7 +97,7 @@ namespace system
 		}
 
 		return (::GetAsyncKeyState(button) != 0);
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 		static_cast<void>(button);	//eliminate unused parameter compiler warning.
 		return false;
 #endif
@@ -115,7 +120,7 @@ namespace system
 			nana::detail::platform_spec::co_initializer co_init;
 			::ShellExecute(0, L"open", url.c_str(), 0, 0, SW_SHOWNORMAL);
 		}
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 #endif
 	}
 }//end namespace system

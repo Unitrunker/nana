@@ -10,7 +10,12 @@
 #if defined(NANA_WINDOWS)
 	#include <windows.h>
 #elif defined(NANA_LINUX)
-	#include <alsa/asoundlib.h> 
+	#include <alsa/asoundlib.h>
+#else
+#   include <sys/soundcard.h>
+#   include <limits.h>
+#   include <fcntl.h>
+#   include <unistd.h>
 #endif
 
 namespace nana{	namespace audio
@@ -34,18 +39,20 @@ namespace nana{	namespace audio
 			static void __stdcall _m_dev_callback(HWAVEOUT handle, UINT msg, audio_device * self, DWORD_PTR, DWORD_PTR);
 #endif
 
-	
+
 #if defined(NANA_WINDOWS)
 			HWAVEOUT handle_;
 			std::recursive_mutex queue_lock_;
 			std::vector<buffer_preparation::meta*> done_queue_;
 #elif defined(NANA_LINUX)
 			snd_pcm_t * handle_;
+#elif defined(NANA_POSIX)
+            int handle_;
+#endif
 			std::size_t rate_;
 			std::size_t channels_;
 			std::size_t bytes_per_sample_;
 			std::size_t bytes_per_frame_;
-#endif
 			buffer_preparation * buf_prep_;
 		};
 

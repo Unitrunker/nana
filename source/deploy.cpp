@@ -19,7 +19,7 @@
 
 #if defined(NANA_WINDOWS)
 	#include <windows.h>
-#elif defined(NANA_LINUX) || defined(NANA_MACOS)
+#elif defined(NANA_POSIX)
 	#include <string.h>
 	#include "detail/platform_spec_selector.hpp"
 #endif
@@ -76,7 +76,7 @@ namespace nana
 		std::cerr << what();
 	}
 
-	//bool utf8_Error::use_throw{true}; 
+	//bool utf8_Error::use_throw{true};
 	bool utf8_Error::use_throw{ false };
 	//end class utf8_Error
 
