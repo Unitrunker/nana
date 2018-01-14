@@ -35,3 +35,15 @@ There are two main branches with an infinite lifetime:
 Other branches:
 * **features** are used to develop new features for the upcoming or a distant future release. Feature branches are named as 'feature-FEATURENAME'.
 * **hotfix** is meant to prepare for a new release, and fixes some bugs from the corresponding tag on the master branch.
+
+FreeBSD
+
+Edit your Codeblocks workspace as follows:
+* Change the selected compiler to LLVM (clang++)
+* Open the 'Search Directories' tab ..
+** add '/usr/local/include' to Compiler tab.
+** add '/usr/local/include/freetype2' to Compiler tab.
+** add '/usr/local/lib' to Linker tab.
+* Open the 'Compiler settings' tab ...
+** On the 'Compiler Flags' sub-tab, check "Have clang++ follow the C++14 ISO language standard.'
+(do this for both Debug and Release)
