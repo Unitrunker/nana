@@ -27,7 +27,7 @@ namespace detail
 	struct	basic_window;
 	class	window_manager;
 
-	
+
 	/// @brief	fundamental core component, it provides an abstraction to the OS platform and some basic functions.
 	class bedrock
 	{
@@ -72,7 +72,7 @@ namespace detail
 		void map_through_widgets(core_window_t*, native_drawable_type);
 
 		//Closes the windows which are associated with the specified thread. If the given thread_id is 0, it closes all windows
-		void close_thread_window(unsigned thread_id);
+		void close_thread_window(unsigned long thread_id);
 	public:
 		void event_expose(core_window_t *, bool exposed);
 		void event_move(core_window_t*, int x, int y);

@@ -248,7 +248,7 @@ namespace detail
 		}other;
 
 		native_window_type	root;		    ///< root Window handle
-		unsigned			thread_id;		///< the identifier of the thread that created the window.
+		unsigned long		thread_id;		///< the identifier of the thread that created the window.
 		unsigned			index;
 		container			children;
 	};

@@ -76,7 +76,7 @@ namespace detail
 
 		void insert(Window wd)
 		{
-			unsigned tid = nana::system::this_thread_id();
+			auto tid = nana::system::this_thread_id();
 
 			bool start_driver;
 
@@ -151,7 +151,7 @@ namespace detail
 
 		void dispatch(Window modal)
 		{
-			unsigned tid = nana::system::this_thread_id();
+			auto tid = nana::system::this_thread_id();
 			msg_packet_tag msg;
 			int qstate;
 
