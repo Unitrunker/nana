@@ -119,7 +119,7 @@ namespace nana
 			}
 		}
 
-		void bedrock::close_thread_window(unsigned long thread_id)
+		void bedrock::close_thread_window(thread_t thread_id)
 		{
 			std::vector<core_window_t*> v;
 			wd_manager().all_handles(v);

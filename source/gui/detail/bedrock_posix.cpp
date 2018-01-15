@@ -139,7 +139,7 @@ namespace detail
 
 	//inc_window
 	//@biref: increament the number of windows
-	int bedrock::inc_window(unsigned tid)
+	int bedrock::inc_window(thread_t tid)
 	{
 		private_impl * impl = instance().impl_;
 		std::lock_guard<decltype(impl->mutex)> lock(impl->mutex);
@@ -148,7 +148,7 @@ namespace detail
 		return (cnt < 0 ? cnt = 1 : ++cnt);
 	}
 
-	bedrock::thread_context* bedrock::open_thread_context(unsigned tid)
+	bedrock::thread_context* bedrock::open_thread_context(thread_t tid)
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 
@@ -169,7 +169,7 @@ namespace detail
 		return context;
 	}
 
-	bedrock::thread_context* bedrock::get_thread_context(unsigned tid)
+	bedrock::thread_context* bedrock::get_thread_context(thread_t tid)
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 
@@ -188,7 +188,7 @@ namespace detail
 		return 0;
 	}
 
-	void bedrock::remove_thread_context(unsigned tid)
+	void bedrock::remove_thread_context(thread_t tid)
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 

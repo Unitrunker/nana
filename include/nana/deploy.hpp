@@ -25,6 +25,9 @@
 
 namespace nana
 {
+	// sledgehammer to avoid #including pthread.h or windows.h in .hpp
+	typedef unsigned long thread_t;
+
 	/// move to *.h ??
 	struct utf8_Error : std::runtime_error
 	{
@@ -42,7 +45,6 @@ namespace nana
 		void emit();
 	};
 
-	
 	/// Checks whether a specified text is utf8 encoding
 	bool is_utf8(const char* str, std::size_t len);
 	void throw_not_utf8(const std::string& text);

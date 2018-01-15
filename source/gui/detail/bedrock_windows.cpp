@@ -245,7 +245,7 @@ namespace detail
 
 
 	/// @brief increament the number of windows in the thread id
-	int bedrock::inc_window(unsigned tid)
+	int bedrock::inc_window(thread_t tid)
 	{
 		//impl refers to the object of private_impl, the object is created when bedrock is creating.
 		private_impl * impl = instance().impl_;
@@ -255,7 +255,7 @@ namespace detail
 		return (cnt < 0 ? cnt = 1 : ++cnt);
 	}
 
-	auto bedrock::open_thread_context(unsigned tid) -> thread_context*
+	auto bedrock::open_thread_context(thread_t tid) -> thread_context*
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 		std::lock_guard<decltype(impl_->mutex)> lock(impl_->mutex);
@@ -269,7 +269,7 @@ namespace detail
 		return context;
 	}
 
-	auto bedrock::get_thread_context(unsigned tid) -> thread_context *
+	auto bedrock::get_thread_context(thread_t tid) -> thread_context *
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 
@@ -289,7 +289,7 @@ namespace detail
 		return nullptr;
 	}
 
-	void bedrock::remove_thread_context(unsigned tid)
+	void bedrock::remove_thread_context(thread_t tid)
 	{
 		if(0 == tid) tid = nana::system::this_thread_id();
 

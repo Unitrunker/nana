@@ -17,6 +17,7 @@
 
 namespace nana
 {
+
 namespace system
 {
 	//sleep
@@ -26,7 +27,7 @@ namespace system
 
 	//this_thread_id
 	//@brief: get the identifier of calling thread.
-	unsigned long this_thread_id();
+	thread_t this_thread_id();
 
 	//timestamp
 	//@brief: it retrieves the timestamp at the time the function is called.

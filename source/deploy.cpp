@@ -24,7 +24,6 @@
 	#include "detail/platform_spec_selector.hpp"
 #endif
 
-
 #include <iostream>
 
 namespace nana

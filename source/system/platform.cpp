@@ -30,6 +30,7 @@
 
 namespace nana
 {
+
 namespace system
 {
 	//sleep
@@ -55,7 +56,7 @@ namespace system
 
 	//this_thread_id
 	//@brief: get the identifier of calling thread.
-	unsigned long this_thread_id()
+	thread_t this_thread_id()
 	{
 #if defined(NANA_WINDOWS)
 		return ::GetCurrentThreadId();
@@ -64,7 +65,7 @@ namespace system
 #elif defined(NANA_MACOS)
 		return ::syscall(SYS_thread_selfid);
 		#elif defined(__FreeBSD__)
-		return (unsigned long)pthread_self(); // hackity hack.
+		return (thread_t)pthread_self(); // hackity hack.
 #endif
 	}
 
